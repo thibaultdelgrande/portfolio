@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PlatformRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
@@ -36,6 +38,19 @@ class Platform
 
     #[ORM\Column(length: 255)]
     private ?string $link = null;
+
+    #[ORM\OneToMany(mappedBy: 'platform', targetEntity: ProjectLink::class)]
+    private Collection $projectLinks;
+
+    public function __construct()
+    {
+        $this->projectLinks = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return $this->getName();
+    }
 
     public function getId(): ?int
     {
@@ -115,6 +130,36 @@ class Platform
     public function setLink(string $link): static
     {
         $this->link = $link;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProjectLink>
+     */
+    public function getProjectLinks(): Collection
+    {
+        return $this->projectLinks;
+    }
+
+    public function addProjectLink(ProjectLink $projectLink): static
+    {
+        if (!$this->projectLinks->contains($projectLink)) {
+            $this->projectLinks->add($projectLink);
+            $projectLink->setPlatform($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProjectLink(ProjectLink $projectLink): static
+    {
+        if ($this->projectLinks->removeElement($projectLink)) {
+            // set the owning side to null (unless already changed)
+            if ($projectLink->getPlatform() === $this) {
+                $projectLink->setPlatform(null);
+            }
+        }
 
         return $this;
     }
