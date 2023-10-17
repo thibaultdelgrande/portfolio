@@ -2,27 +2,28 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Platform;
+use App\Entity\Project;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ColorField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 
-class PlatformCrudController extends AbstractCrudController
+
+class ProjectCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Platform::class;
+        return Project::class;
     }
 
     public function configureFields(string $pageName): iterable
     {
         return [
-            TextField::new('name'),
-            ColorField::new('color')->showValue(),
-            UrlField::new('link'),
+            TextField::new('title'),
+            TextEditorField::new('description'),
+            DateField::new('releaseDate'),
             Field::new('logo')
                 ->setFormType(VichImageType::class) // Utilisez le bon type de formulaire VichUploader
                 ->setLabel('Image'),
