@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ProjectRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
@@ -37,6 +39,19 @@ class Project
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    #[ORM\OneToMany(mappedBy: 'project', targetEntity: ProjectLink::class, orphanRemoval: true, cascade:["persist"])]
+    private Collection $projectLinks;
+
+    public function __construct()
+    {
+        $this->projectLinks = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return $this->getTitle();
+    }
 
     public function getId(): ?int
     {
@@ -118,5 +133,35 @@ class Project
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @return Collection<int, ProjectLink>
+     */
+    public function getProjectLinks(): Collection
+    {
+        return $this->projectLinks;
+    }
+
+    public function addProjectLink(ProjectLink $projectLink): static
+    {
+        if (!$this->projectLinks->contains($projectLink)) {
+            $this->projectLinks->add($projectLink);
+            $projectLink->setProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProjectLink(ProjectLink $projectLink): static
+    {
+        if ($this->projectLinks->removeElement($projectLink)) {
+            // set the owning side to null (unless already changed)
+            if ($projectLink->getProject() === $this) {
+                $projectLink->setProject(null);
+            }
+        }
+
+        return $this;
     }
 }
