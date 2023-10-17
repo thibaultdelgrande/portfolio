@@ -43,6 +43,9 @@ class Project
     #[ORM\OneToMany(mappedBy: 'project', targetEntity: ProjectLink::class, orphanRemoval: true, cascade:["persist"])]
     private Collection $projectLinks;
 
+    #[ORM\OneToOne(mappedBy: 'project', cascade: ['persist', 'remove'])]
+    private ?Game $game = null;
+
     public function __construct()
     {
         $this->projectLinks = new ArrayCollection();
@@ -161,6 +164,23 @@ class Project
                 $projectLink->setProject(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getGame(): ?Game
+    {
+        return $this->game;
+    }
+
+    public function setGame(Game $game): static
+    {
+        // set the owning side of the relation if necessary
+        if ($game->getProject() !== $this) {
+            $game->setProject($this);
+        }
+
+        $this->game = $game;
 
         return $this;
     }
