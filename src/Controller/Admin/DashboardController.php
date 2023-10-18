@@ -8,7 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Platform;
-use App\Entity\Project;
+use App\Entity\Game;
 
 class DashboardController extends AbstractDashboardController
 {
@@ -48,7 +48,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToUrl('Log out', 'fa ...', '/logout');
         yield MenuItem::section();
         yield MenuItem::linkToCrud('Platform', 'fas fa-list', Platform::class);
-        yield MenuItem::linkToCrud('Project', 'fas fa-list', Project::class);
+        yield MenuItem::linkToCrud('Game', 'fas fa-list', Game::class);
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
     }
 }
