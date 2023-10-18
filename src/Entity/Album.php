@@ -22,7 +22,7 @@ class Album
     #[ORM\Column]
     private ?bool $single = null;
 
-    #[ORM\OneToMany(mappedBy: 'album', targetEntity: AlbumSong::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'album', targetEntity: AlbumSong::class, orphanRemoval: true, cascade:["persist"])]
     private Collection $songs;
 
     public function __construct()
