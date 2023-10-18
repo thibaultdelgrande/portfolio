@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Platform;
 use App\Entity\Game;
+use App\Entity\Album;
+use App\Entity\Song;
 
 class DashboardController extends AbstractDashboardController
 {
@@ -49,6 +51,8 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::section();
         yield MenuItem::linkToCrud('Platform', 'fas fa-list', Platform::class);
         yield MenuItem::linkToCrud('Game', 'fas fa-list', Game::class);
+        yield MenuItem::linkToCrud('Album', 'fas fa-list', Album::class);
+        yield MenuItem::linkToCrud('Song', 'fas fa-list', Song::class);
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
     }
 }

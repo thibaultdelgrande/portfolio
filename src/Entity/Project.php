@@ -46,6 +46,9 @@ class Project
     #[ORM\OneToOne(mappedBy: 'project', cascade: ['persist', 'remove'])]
     private ?Game $game = null;
 
+    #[ORM\OneToOne(mappedBy: 'project', cascade: ['persist', 'remove'])]
+    private ?Album $album = null;
+
     public function __construct()
     {
         $this->projectLinks = new ArrayCollection();
@@ -181,6 +184,23 @@ class Project
         }
 
         $this->game = $game;
+
+        return $this;
+    }
+
+    public function getAlbum(): ?Album
+    {
+        return $this->album;
+    }
+
+    public function setAlbum(Album $album): static
+    {
+        // set the owning side of the relation if necessary
+        if ($album->getProject() !== $this) {
+            $album->setProject($this);
+        }
+
+        $this->album = $album;
 
         return $this;
     }
