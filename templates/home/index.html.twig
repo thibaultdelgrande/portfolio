@@ -23,7 +23,7 @@
 <div id="musiques" class="m-5 d-flex align-self-center">
     {% for album in albums %}
         <div class="projet">
-            <img src="{{vich_uploader_asset(game.project)}}" alt="{{game.project}}">
+            <img src="{{vich_uploader_asset(album.project)}}" alt="{{album.project}}">
         </div>
     {% endfor %}
 </div>
