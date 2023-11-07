@@ -1,25 +1,13 @@
 /* public/css/styles.css */
 
-.carre {
-    width: 200px;
-    height: 200px;
-    transition: transform 0.3s, box-shadow 0.3s, filter 0.3s;
-    z-index: 10;
-}
-
-.carre:hover {
-    transform: scale(1.1);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    /*Appliquer un lÃ©ger filtre colorÃ©*/
-    filter: saturate(1.5);
-}
-
 #plateformes{
-    display: flex;
     flex-wrap: wrap;
-    align-items: center;
     margin: 0 auto;
-    justify-content: center;
+}
+
+#jeux{
+    margin: 0 auto;
+    overflow-x: scroll;
 }
 
 .plateforme{
@@ -27,16 +15,23 @@
     margin: 16px;
 }
 
-.plateforme>img{
-    width: 100%;
-    height: 100%;
+.projet{
+    height: 300px;
+    margin: 16px;
+}
+
+.plateforme>img,
+.projet>img{
+    width: 300px;
+    height: 300px;
     transition: transform 0.3s, box-shadow 0.3s, filter 0.3s;
     z-index: 10;
 }
 
-.plateforme>img:hover{
+.plateforme>img:hover,
+.projet>img:hover{
     transform: scale(1.1);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    /*Appliquer un lÃ©ger filtre colorÃ©*/
+    /*Appliquer un léger filtre coloré*/
     filter: saturate(1.5);
 }
