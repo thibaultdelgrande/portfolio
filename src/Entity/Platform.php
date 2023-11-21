@@ -2,26 +2,44 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use App\Repository\PlatformRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: PlatformRepository::class)]
 #[Vich\Uploadable]
+#[ApiResource(
+    operations: [
+        new Get(normalizationContext: ['groups' => ['platform:item']]),
+        new GetCollection(normalizationContext: ['groups' => ['platform:list']])
+    ],
+    order: ['name' => 'ASC'],
+    paginationEnabled: false
+)]
+#[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'name' => 'partial', 'color' => 'exact', 'link' => 'partial'])]
 class Platform
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['platform:list', 'platform:item'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['platform:list', 'platform:item'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['platform:list', 'platform:item'])]
     private ?string $color = null;
 
     #[Vich\UploadableField(mapping: 'logos', fileNameProperty: 'imageName', size: 'imageSize')]
@@ -34,6 +52,7 @@ class Platform
     private ?int $imageSize = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['platform:list','platform:item'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\Column(length: 255)]

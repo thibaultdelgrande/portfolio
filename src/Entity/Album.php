@@ -2,27 +2,46 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use App\Repository\AlbumRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AlbumRepository::class)]
+#[ApiResource(
+    operations: [
+        new Get(normalizationContext: ['groups' => ['album:item']]),
+        new GetCollection(normalizationContext: ['groups' => ['album:list']])
+    ],
+    order: ['project.releaseDate' => 'DESC'],
+    paginationEnabled: false
+)]
+#[ApiFilter(SearchFilter::class, properties: [ 'project' => 'exact'])]
 class Album
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['album:list', 'album:item'])]
     private ?int $id = null;
 
     #[ORM\OneToOne(inversedBy: 'album', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['album:list', 'album:item'])]
     private ?Project $project = null;
 
     #[ORM\Column]
+    #[Groups(['album:list', 'album:item'])]
     private ?bool $single = null;
 
     #[ORM\OneToMany(mappedBy: 'album', targetEntity: AlbumSong::class, orphanRemoval: true, cascade:["persist"])]
+    #[Groups(['album:list', 'album:item'])]
     private Collection $songs;
 
     public function __construct()
