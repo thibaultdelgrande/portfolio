@@ -2,19 +2,36 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use App\Repository\GameRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: GameRepository::class)]
+#[ApiResource(
+    operations: [
+        new Get(normalizationContext: ['groups' => ['game:item']]),
+        new GetCollection(normalizationContext: ['groups' => ['game:list']])
+    ],
+    order: ['project.releaseDate' => 'DESC'],
+    paginationEnabled: false
+)]
+#[ApiFilter(SearchFilter::class, properties: [ 'project' => 'exact'])]
 class Game
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['game:list', 'game:item'])]
     private ?int $id = null;
 
     #[ORM\OneToOne(inversedBy: 'game', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['game:list', 'game:item'])]
     private ?Project $project = null;
 
     public function getId(): ?int

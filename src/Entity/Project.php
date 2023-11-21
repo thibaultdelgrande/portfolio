@@ -2,27 +2,45 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use App\Repository\ProjectRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
 #[Vich\Uploadable]
+#[ApiResource(
+    operations: [
+        new Get(normalizationContext: ['groups' => ['project:item']]),
+        new GetCollection(normalizationContext: ['groups' => ['project:list']])
+    ],
+    order: ['releaseDate' => 'DESC'],
+    paginationEnabled: false
+)]
+#[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'title' => 'partial', 'description' => 'partial'])]
 class Project
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['project:list', 'project:item'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['project:list', 'project:item'])]
     private ?string $title = null;
 
     #[ORM\Column]
+    #[Groups(['project:list', 'project:item'])]
     private ?\DateTimeImmutable $releaseDate = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -38,9 +56,11 @@ class Project
     private ?int $imageSize = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['project:list', 'project:item'])]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\OneToMany(mappedBy: 'project', targetEntity: ProjectLink::class, orphanRemoval: true, cascade:["persist"])]
+    #[Groups(['project:list', 'project:item'])]
     private Collection $projectLinks;
 
     #[ORM\OneToOne(mappedBy: 'project', cascade: ['persist', 'remove'])]
