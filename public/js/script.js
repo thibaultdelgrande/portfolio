@@ -66,8 +66,6 @@ async function showProject(id, type){
         img.classList.add('plateforme');
         a.innerHTML = '';
         a.appendChild(img);
-
-
     });
 
     if (type === 'album') {
@@ -83,9 +81,9 @@ async function showProject(id, type){
             const song = await reponse2.json();
             const li = document.createElement('li');
             if (song_info.version == undefined) {
-                li.textContent = `${song.title} - ${Math.trunc(song_info.duration/60)}:${song_info.duration%60}`;
+                li.textContent = `${song.title} - ${Math.trunc(song_info.duration/60)}:${('0' + song_info.duration%60).slice(-2)}`;
             } else {
-                li.textContent = `${song.title} (${song_info.version}) - ${Math.trunc(song_info.duration/60)}:${song_info.duration%60}`;
+                li.textContent = `${song.title} (${song_info.version}) - ${Math.trunc(song_info.duration/60)}:${('0' + song_info.duration%60).slice(-2)}`;
             }
             return li;
         }));

@@ -1,0 +1,11 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Erreur {{ status_code }}{% endblock %}
+
+{% block main %}
+    <h1 class="mt-5">Erreur {{ status_code }}</h1>
+    <p>L'erreur suivante est survenue :
+    {{ status_text }}
+    <a href="/">Retourner sur la page d'accueil</a></p>
+{% endblock %}
