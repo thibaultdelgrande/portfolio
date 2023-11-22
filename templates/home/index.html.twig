@@ -6,7 +6,7 @@
 <h1 class="m-5 pt-5">Portfolio Thibault Delgrande</h1>
 <div id="plateformes" class="m-5 d-flex justify-content-center align-self-center">
     {% for platform in platforms %}
-        <a class="plateforme" href="{{platform.link}}">
+        <a class="plateforme" href="{{platform.link}}" target="_blank">
             <img src="{{vich_uploader_asset(platform)}}" alt="{{platform}}">
         </a>
     {% endfor %}
@@ -14,7 +14,7 @@
 <h2 class="m-5 pt-2">Jeux</h2>
 <div id="jeux" class="m-5 d-flex align-self-center">
     {% for game in games %}
-        <div class="projet">
+        <div class="projet" data-id="{{game.project.id}}" data-type="game">
             <img src="{{vich_uploader_asset(game.project)}}" alt="{{game.project}}">
         </div>
     {% endfor %}
@@ -22,9 +22,16 @@
 <h2 class="m-5 pt-2">Musique</h2>
 <div id="musiques" class="m-5 d-flex align-self-center">
     {% for album in albums %}
-        <div class="projet">
+        <div class="projet" data-id="{{album.project.id}}" data-type="album">
             <img src="{{vich_uploader_asset(album.project)}}" alt="{{album.project}}">
         </div>
     {% endfor %}
 </div>
+<div id="projet">
+    <div id="projetInfos">
+        <div class="spinner-border" role="status">
+        </div>
+    </div>
+</div>
+<script src="/js/script.js"></script>
 {% endblock %}

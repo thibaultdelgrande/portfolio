@@ -1,6 +1,6 @@
 /* public/css/styles.css */
 
-#plateformes{
+#plateformes,#liens{
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -21,6 +21,7 @@
 .projet{
     height: 300px;
     margin: 16px;
+    cursor: pointer;
 }
 
 .plateforme>img{
@@ -30,8 +31,8 @@
     z-index: 10;
 }
 
-.projet>img{
-    width: 300px;
+.projet>img,#projetInfos>img{
+    width: auto;
     height: 300px;
     transition: transform 0.3s, box-shadow 0.3s, filter 0.3s;
     z-index: 10;
@@ -43,4 +44,25 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     /*Appliquer un léger filtre coloré*/
     filter: saturate(1.5);
+}
+
+#projet{
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    width: 100vw;
+    height: 100vh;
+    display: none;
+}
+
+#projetInfos{
+    background-color: white;
+    margin: 32px;
+    padding: 32px;
+    border-radius: 8px;
+    height: auto;
+    overflow-y: scroll;
 }
