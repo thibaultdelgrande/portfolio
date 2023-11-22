@@ -46,9 +46,11 @@ class Platform
     private ?File $logo = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['platform:list', 'platform:item'])]
     private ?string $imageName = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['platform:list', 'platform:item'])]
     private ?int $imageSize = null;
 
     #[ORM\Column(nullable: true)]

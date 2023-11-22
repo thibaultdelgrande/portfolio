@@ -44,15 +44,18 @@ class Project
     private ?\DateTimeImmutable $releaseDate = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['project:list', 'project:item'])]
     private ?string $description = null;
 
     #[Vich\UploadableField(mapping: 'projects_logos', fileNameProperty: 'imageName', size: 'imageSize')]
     private ?File $logo = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['project:list', 'project:item'])]
     private ?string $imageName = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['project:list', 'project:item'])]
     private ?int $imageSize = null;
 
     #[ORM\Column(nullable: true)]
@@ -64,9 +67,11 @@ class Project
     private Collection $projectLinks;
 
     #[ORM\OneToOne(mappedBy: 'project', cascade: ['persist', 'remove'])]
+    #[Groups(['project:list', 'project:item'])]
     private ?Game $game = null;
 
     #[ORM\OneToOne(mappedBy: 'project', cascade: ['persist', 'remove'])]
+    #[Groups(['project:list', 'project:item'])]
     private ?Album $album = null;
 
     public function __construct()
