@@ -21,6 +21,16 @@ class AlbumRepository extends ServiceEntityRepository
         parent::__construct($registry, Album::class);
     }
 
+    public function findAll(): array
+    {
+        return $this->createQueryBuilder('a')
+            ->leftJoin('a.project', 'p')
+            ->orderBy('p.releaseDate', 'DESC')
+            ->getQuery()
+            ->getResult();
+
+    }
+
 //    /**
 //     * @return Album[] Returns an array of Album objects
 //     */

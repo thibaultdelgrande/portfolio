@@ -74,6 +74,9 @@ class Project
     #[Groups(['project:list', 'project:item'])]
     private ?Album $album = null;
 
+    #[ORM\OneToOne(mappedBy: 'project', cascade: ['persist', 'remove'])]
+    private ?Website $website = null;
+
     public function __construct()
     {
         $this->projectLinks = new ArrayCollection();
@@ -226,6 +229,23 @@ class Project
         }
 
         $this->album = $album;
+
+        return $this;
+    }
+
+    public function getWebsite(): ?Website
+    {
+        return $this->website;
+    }
+
+    public function setWebsite(Website $website): static
+    {
+        // set the owning side of the relation if necessary
+        if ($website->getProject() !== $this) {
+            $website->setProject($this);
+        }
+
+        $this->website = $website;
 
         return $this;
     }

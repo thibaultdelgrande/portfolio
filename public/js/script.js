@@ -90,9 +90,4 @@ async function showProject(id, type){
         tracklist.append(...elements);
         div.appendChild(tracklist);
     }
-
-    const date_modif = document.createElement('span');
-    date_modif.textContent = "Dernière modification : " + new Date(project.updatedAt).toLocaleString('fr-FR', {year: 'numeric', month: 'long', day: 'numeric'});
-    div.appendChild(date_modif);
-
 }
