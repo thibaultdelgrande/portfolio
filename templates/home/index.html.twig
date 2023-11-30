@@ -27,6 +27,14 @@
         </div>
     {% endfor %}
 </div>
+<h2 class="m-5 pt-2">Sites web</h2>
+<div id="sites" class="m-5 d-flex align-self-center">
+    {% for site in websites %}
+        <div class="projet" data-id="{{site.project.id}}" data-type="site">
+            <img src="{{vich_uploader_asset(site.project)}}" alt="{{site.project}}">
+        </div>
+    {% endfor %}
+</div>
 <div id="projet">
     <div id="projetInfos">
         <div class="spinner-border" role="status">
