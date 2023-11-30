@@ -55,7 +55,6 @@ async function showProject(id, type){
         a.class = "plateforme";
         a.href = link.url;
         a.target = "_blank";
-        a.textContent = link.url;
         liens.appendChild(a);
 
         const response2 = await fetch(`${link.platform}`);
