@@ -12,6 +12,7 @@ use App\Entity\Game;
 use App\Entity\Album;
 use App\Entity\Song;
 use App\Entity\Website;
+use App\Entity\Video;
 
 class DashboardController extends AbstractDashboardController
 {
@@ -55,6 +56,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Album', 'fas fa-list', Album::class);
         yield MenuItem::linkToCrud('Song', 'fas fa-list', Song::class);
         yield MenuItem::linkToCrud('Website', 'fas fa-list', Website::class);
+        yield MenuItem::linkToCrud('Video', 'fas fa-list', Video::class);
         // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
     }
 }

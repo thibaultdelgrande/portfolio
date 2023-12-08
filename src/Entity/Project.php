@@ -75,7 +75,12 @@ class Project
     private ?Album $album = null;
 
     #[ORM\OneToOne(mappedBy: 'project', cascade: ['persist', 'remove'])]
+    #[Groups(['project:list', 'project:item'])]
     private ?Website $website = null;
+
+    #[ORM\OneToOne(mappedBy: 'project', cascade: ['persist', 'remove'])]
+    #[Groups(['project:list', 'project:item'])]
+    private ?Video $video = null;
 
     public function __construct()
     {
@@ -246,6 +251,23 @@ class Project
         }
 
         $this->website = $website;
+
+        return $this;
+    }
+
+    public function getVideo(): ?Video
+    {
+        return $this->video;
+    }
+
+    public function setVideo(Video $video): static
+    {
+        // set the owning side of the relation if necessary
+        if ($video->getProject() !== $this) {
+            $video->setProject($this);
+        }
+
+        $this->video = $video;
 
         return $this;
     }
