@@ -35,6 +35,13 @@
         </div>
     {% endfor %}
 </div>
+<h2 class="m-5 pt-2">Vidéos</h2>
+<div id="videos" class="m-5 d-flex align-self-center">
+    {% for video in videos %}
+        <div class="projet" data-id="{{video.project.id}}" data-type="video">
+            <img src="{{vich_uploader_asset(video.project)}}" alt="{{video.project}}">
+        </div>
+    {% endfor %}
 <div id="projet">
     <div id="projetInfos">
         <div class="spinner-border" role="status">
