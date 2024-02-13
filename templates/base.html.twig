@@ -18,7 +18,7 @@
         {% block javascripts %}
         {% endblock %}
     </head>
-    <body class="ms-4">
+    <body>
         <header class="position-absolute top-0 end-0 m-4">
             {% block header %}
                 {% if app.user %}
@@ -34,5 +34,10 @@
             {% endblock %}
         </header>
         {% block main %}{% endblock %}
+        <footer>
+            {% block footer %}
+            <p class="text-center">© 2021-2024 Développé et hebergé par Thibault Delgrande</p>
+            {% endblock %}
+        </footer>
     </body>
 </html>
