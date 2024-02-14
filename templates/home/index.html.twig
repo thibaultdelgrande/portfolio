@@ -13,42 +13,67 @@
 		{% endfor %}
 	</div>
 	<h2 class="m-5 pt-2">Jeux</h2>
-	<div id="jeux" class="m-5 d-flex align-self-center">
-		{% for game in games %}
-			<div class="projet" data-id="{{game.project.id}}" data-type="game">
-				<img src="{{vich_uploader_asset(game.project)}}" alt="{{game.project}}">
-			</div>
-		{% endfor %}
-	</div>
-	<h2 class="m-5 pt-2">Musique</h2>
-	<div id="musiques" class="m-5 d-flex align-self-center">
-		{% for album in albums %}
-			<div class="projet" data-id="{{album.project.id}}" data-type="album">
-				<img src="{{vich_uploader_asset(album.project)}}" alt="{{album.project}}">
-			</div>
-		{% endfor %}
-	</div>
-	<h2 class="m-5 pt-2">Sites web</h2>
-	<div id="sites" class="m-5 d-flex align-self-center">
-		{% for site in websites %}
-			<div class="projet" data-id="{{site.project.id}}" data-type="site">
-				<img src="{{vich_uploader_asset(site.project)}}" alt="{{site.project}}">
-			</div>
-		{% endfor %}
-	</div>
-	<h2 class="m-5 pt-2">Vidéos</h2>
-	<div id="videos" class="m-5 d-flex align-self-center">
-		{% for video in videos %}
-			<div class="projet" data-id="{{video.project.id}}" data-type="video">
-				<img src="{{vich_uploader_asset(video.project)}}" alt="{{video.project}}">
-			</div>
-		{% endfor %}
-		<div id="projet">
-			<div id="projetInfos">
-				<div class="spinner-border" role="status"></div>
-			</div>
+	<div id="jeux" class="m-5 categorie">
+		<div class="buttons">
+			<button class="scrollButton left">←</button>
+			<button class="scrollButton right">→</button>
+		</div>
+		<div class="selection d-flex align-self-center">
+			{% for game in games %}
+				<div class="projet" data-id="{{game.project.id}}" data-type="game">
+					<img src="{{vich_uploader_asset(game.project)}}" alt="{{game.project}}">
+				</div>
+			{% endfor %}	
 		</div>
 	</div>
+	<h2 class="m-5 pt-2">Musique</h2>
+	<div id="musiques" class="m-5 categorie">
+		<div class="buttons">
+			<button class="scrollButton left">←</button>
+			<button class="scrollButton right">→</button>
+		</div>
+		<div class="selection d-flex align-self-center">
+			{% for album in albums %}
+				<div class="projet" data-id="{{album.project.id}}" data-type="album">
+					<img src="{{vich_uploader_asset(album.project)}}" alt="{{album.project}}">
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+	<h2 class="m-5 pt-2">Sites web</h2>
+	<div id="sites" class="m-5 categorie">
+		<div class="buttons">
+			<button class="scrollButton left">←</button>
+			<button class="scrollButton right">→</button>
+		</div>
+		<div class="selection d-flex align-self-center">
+			{% for site in websites %}
+				<div class="projet" data-id="{{site.project.id}}" data-type="site">
+					<img src="{{vich_uploader_asset(site.project)}}" alt="{{site.project}}">
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+	<h2 class="m-5 pt-2">Vidéos</h2>
+	<div id="videos" class="m-5 categorie">
+		<div class="buttons">
+			<button class="scrollButton left">←</button>
+			<button class="scrollButton right">→</button>
+		</div>
+		<div class="selection d-flex align-self-center">
+			{% for video in videos %}
+				<div class="projet" data-id="{{video.project.id}}" data-type="video">
+					<img src="{{vich_uploader_asset(video.project)}}" alt="{{video.project}}">
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+	<div id="projet">
+		<div id="projetInfos">
+			<div class="spinner-border" role="status"></div>
+		</div>
+	</div>
+
 	<script src="/js/script.js"></script>
 	<script src="/js/scrollBar.js"></script>
 {% endblock %}
