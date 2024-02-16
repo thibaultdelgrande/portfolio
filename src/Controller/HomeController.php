@@ -24,4 +24,10 @@ class HomeController extends AbstractController
             'websites' => $websites->findAll(),
         ]);
     }
+
+    #[Route('/3d', name: 'app_3d')]
+    public function threeD(): Response
+    {
+        return $this->render('home/3d.html.twig');
+    }
 }
