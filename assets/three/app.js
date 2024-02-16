@@ -2,6 +2,12 @@ import * as THREE from 'three';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 import './app.css';
 import GUI from 'lil-gui';
+import PlayerControls from './global/controles';
+import Text3D from './global/text';
+import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+
+
 
 /**
  * GUI
@@ -11,15 +17,21 @@ const gui = new GUI()
 
 const proprietes = {
 	jumpHeight: 500,
-	vitesse: 1000
+	vitesse: 2000,
+	appareil: 'clavier',
+	modeJeu: 'fps'
 }
 
 gui.add(proprietes, 'jumpHeight', 0, 500).onChange((value) => {
 	proprietes.jumpHeight = value;
-})
+});
 gui.add(proprietes, 'vitesse', 0, 1000).onChange((value) => {
 	proprietes.vitesse = value;
-})
+});
+gui.add(proprietes, 'modeJeu', ['fps', '2d', 'vr']).onChange((value) => {
+	proprietes.modeJeu = value;
+});
+
 
 
 
@@ -38,24 +50,21 @@ let canJump = false;
 let prevTime = performance.now();
 const velocity = new THREE.Vector3();
 const direction = new THREE.Vector3();
-const vertex = new THREE.Vector3();
-const color = new THREE.Color();
 
+// PlayerControls
+const playerControls = new PlayerControls(proprietes.modeJeu);
 init();
 animate();
 
 function init() {
 
 	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
-	camera.position.y = 10;
+	camera.position.y = 20;
 
 	scene = new THREE.Scene();
 	scene.background = new THREE.Color(0xffffff);
 	scene.fog = new THREE.Fog(0xffffff, 0, 750);
 
-	const light = new THREE.HemisphereLight(0xeeeeff, 0x777788, 2.5);
-	light.position.set(0.5, 1, 0.75);
-	scene.add(light);
 
 	controls = new PointerLockControls(camera, document.body);
 
@@ -76,7 +85,6 @@ function init() {
 	});
 
 	controls.addEventListener('unlock', function () {
-
 		blocker.style.display = 'block';
 		instructions.style.display = '';
 
@@ -87,7 +95,6 @@ function init() {
 	const onKeyDown = function (event) {
 
 		switch (event.code) {
-
 			case 'ArrowUp':
 			case 'KeyW':
 				moveForward = true;
@@ -152,74 +159,103 @@ function init() {
 
 	// floor
 
-	let floorGeometry = new THREE.PlaneGeometry(2000, 2000, 100, 100);
+	let floorGeometry = new THREE.PlaneGeometry(10000, 600);
 	floorGeometry.rotateX(- Math.PI / 2);
 
-	// vertex displacement
 
-	let position = floorGeometry.attributes.position;
-
-	for (let i = 0, l = position.count; i < l; i++) {
-
-		vertex.fromBufferAttribute(position, i);
-
-		vertex.x += Math.random() * 20 - 10;
-		vertex.y += Math.random() * 2;
-		vertex.z += Math.random() * 20 - 10;
-
-		position.setXYZ(i, vertex.x, vertex.y, vertex.z);
-
-	}
-
-	floorGeometry = floorGeometry.toNonIndexed(); // ensure each face has unique vertices
-
-	position = floorGeometry.attributes.position;
-	const colorsFloor = [];
-
-	for (let i = 0, l = position.count; i < l; i++) {
-
-		color.setHSL(Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75, THREE.SRGBColorSpace);
-		colorsFloor.push(color.r, color.g, color.b);
-
-	}
-
-	floorGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colorsFloor, 3));
-
-	const floorMaterial = new THREE.MeshBasicMaterial({ vertexColors: true });
+	const floorMaterial = new THREE.MeshBasicMaterial({ color: 0xffafcc });
 
 	const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+	floor.position.z = -200;
 	scene.add(floor);
 
-	// objects
+	// Textes
 
-	const boxGeometry = new THREE.BoxGeometry(20, 20, 20).toNonIndexed();
+	const gameText = new Text3D('Jeux');
+	gameText.position.set(-100, 20, -200);
+	scene.add(gameText);
 
-	position = boxGeometry.attributes.position;
-	const colorsBox = [];
+	const musicText = new Text3D('Musique');
+	musicText.position.set(100, 20, -200);
+	scene.add(musicText);
 
-	for (let i = 0, l = position.count; i < l; i++) {
+	const siteText = new Text3D('Site web');
+	siteText.position.set(-100, 20, -400);
+	scene.add(siteText);
 
-		color.setHSL(Math.random() * 0.3 + 0.5, 0.75, Math.random() * 0.25 + 0.75, THREE.SRGBColorSpace);
-		colorsBox.push(color.r, color.g, color.b);
+	const videoText = new Text3D('Vidéos');
+	videoText.position.set(100, 20, -400);
+	scene.add(videoText);
 
-	}
+	// Afficher les jaquettes
 
-	boxGeometry.setAttribute('color', new THREE.Float32BufferAttribute(colorsBox, 3));
+	const url = '/api/projects';
+	let compteurJeux = 0;
+	let compteurMusique = 0;
+	let compteurSite = 0;
+	let compteurVideo = 0;
 
-	for (let i = 0; i < 500; i++) {
+	fetch(url)
+		.then(response => response.json())
+		.then(data => {
+			data["hydra:member"].forEach((element, index) => {
+				let positionX = 0;
+				let positionZ = 0;
 
-		const boxMaterial = new THREE.MeshPhongMaterial({ specular: 0xffffff, flatShading: true, vertexColors: true });
-		boxMaterial.color.setHSL(Math.random() * 0.2 + 0.5, 0.75, Math.random() * 0.25 + 0.75, THREE.SRGBColorSpace);
+				switch (element.type) {
+					case 'game':
+						positionX = -300 - (compteurJeux * 200);
+						positionZ = -200;
+						compteurJeux++;
+						break;
+					case 'album':
+						positionX = 300 + (compteurMusique * 200);
+						positionZ = -200;
+						compteurMusique++;
+						console.log(compteurMusique, element.type, positionX, positionZ)
+						break;
+					case 'website':
+						positionX = -300 - (compteurSite * 200);
+						positionZ = -400;
+						compteurSite++;
+						break;
+					case 'video':
+						positionX = 300 + (compteurVideo * 200);
+						positionZ = -400;
+						compteurVideo++;
+						break;
+				}
+				
+				console.log(positionX, positionZ,element.type)
 
-		const box = new THREE.Mesh(boxGeometry, boxMaterial);
-		box.position.x = Math.floor(Math.random() * 20 - 10) * 20;
-		box.position.y = Math.floor(Math.random() * 20) * 20 + 10;
-		box.position.z = Math.floor(Math.random() * 20 - 10) * 20;
 
-		scene.add(box);
-		objects.push(box);
+				// Ajoute le titre du projet
+				const titre = new Text3D(element.title, 12);
+				titre.position.set(positionX, 110, positionZ + 10);
+				scene.add(titre);
 
-	}
+				const img = new Image();
+
+				img.onload = function () {
+					const height = img.height;
+					const width = img.width;
+					const ratio = width / height;
+		
+					const jaquette = new THREE.TextureLoader().load(`/images/projects/logos/${element.imageName}`);
+					const jaquetteMaterial = new THREE.SpriteMaterial({ map: jaquette });
+					const jaquetteMesh = new THREE.Sprite(jaquetteMaterial);
+					jaquetteMesh.scale.set(100 * ratio, 100, 1);
+					jaquetteMesh.position.set(positionX, 50, positionZ);
+					scene.add(jaquetteMesh);
+				};
+
+				img.src = `/images/projects/logos/${element.imageName}`;
+
+			});
+		});
+
+
+
 
 	//
 
@@ -269,7 +305,7 @@ function animate() {
 		direction.x = Number(moveRight) - Number(moveLeft);
 		direction.normalize(); // this ensures consistent movements in all directions
 
-		
+
 		if (moveForward || moveBackward) velocity.z -= direction.z * proprietes.vitesse * delta;
 		if (moveLeft || moveRight) velocity.x -= direction.x * proprietes.vitesse * delta;
 
@@ -285,13 +321,12 @@ function animate() {
 
 		controls.getObject().position.y += (velocity.y * delta); // new behavior
 
-		if (controls.getObject().position.y < 10) {
+		if (controls.getObject().position.y < 20) {
 
 			velocity.y = 0;
-			controls.getObject().position.y = 10;
+			controls.getObject().position.y = 20;
 
 			canJump = true;
-
 		}
 
 	}

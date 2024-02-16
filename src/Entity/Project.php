@@ -82,6 +82,9 @@ class Project
     #[Groups(['project:list', 'project:item'])]
     private ?Video $video = null;
 
+    #[Groups(['project:list', 'project:item'])]
+    private ?string $type = null;
+
     public function __construct()
     {
         $this->projectLinks = new ArrayCollection();
@@ -270,5 +273,26 @@ class Project
         $this->video = $video;
 
         return $this;
+    }
+
+    public function getType(): string
+    {
+        if ($this->game) {
+            return 'game';
+        }
+
+        if ($this->album) {
+            return 'album';
+        }
+
+        if ($this->website) {
+            return 'website';
+        }
+
+        if ($this->video) {
+            return 'video';
+        }
+
+        return 'project';
     }
 }
