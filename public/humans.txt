@@ -1,0 +1,25 @@
+/* TEAM */
+
+Developer:
+- Name: Thibault Delgrande
+- Location: France
+- Website: https://thibaultdg.fr
+
+/* THANKS AND CREDITS */
+
+Framework:
+- Symfony: https://symfony.com/
+
+Libraries/Tools (PHP):
+- API Platform: https://api-platform.com/
+- EasyAdmin Bundle: https://symfony.com/doc/current/bundles/EasyAdminBundle/index.html
+- Pentatrion Vite Bundle: https://symfony-vite.pentatrion.com/
+
+Libraries/Tools (JavaScript):
+- Vite: https://vitejs.dev/
+- Three.js: https://threejs.org/
+
+/* SITE INFORMATION */
+
+Site Name: Portfolio Thibault Delgrande
+Site URL: https://thibaultdg.fr
