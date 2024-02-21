@@ -1,3 +1,10 @@
+
+@font-face {
+    font-family: 'Ubuntu';
+    src: url('./global/Ubuntu-Regular.ttf');
+}
+
+
 body{
     margin: 0;
     overflow: hidden;
