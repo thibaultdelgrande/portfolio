@@ -1,24 +1,17 @@
 import * as THREE from 'three';
 
 export default class PlayerMove {
-    constructor () {
+    constructor (camera,raycaster,proprietes) {
+        this.camera = camera;
+        this.raycaster = raycaster;
+        this.proprietes = proprietes;
         this.velocity = new THREE.Vector3();
-        const direction = new THREE.Vector3();
-    }
+        this.direction = new THREE.Vector3();
 
-    moveUp() {
-    
-    }
-
-    moveDown() {
-
-    }
-
-    moveLeft() {
-
-    }
-
-    moveRight() {
-
+        this.up = false;
+        this.down = false;
+        this.left = false;
+        this.right = false;
+        this.jump = false;
     }
 }

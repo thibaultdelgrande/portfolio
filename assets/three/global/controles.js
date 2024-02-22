@@ -1,12 +1,11 @@
 // controls.js
-import PlayerMove from "./mouvement";
+import PlayerFPS from "./fps/movementFPS";
 
 export default class PlayerControls {
     /**
      * Permet de définir les contrôles du joueur en fonction de l'appareil utilisé (clavier, manette ou tactile)
      */
-    constructor(modeJeu) {
-        this.modeJeu = modeJeu; // Mode de jeu (fps, 2d, vr)
+    constructor(modeJeu,camera,raycaster, proprietes) {
         this.tactile = false; // Désactive le tactile par défaut
 
         this.moveUp = false;
@@ -14,8 +13,13 @@ export default class PlayerControls {
         this.moveLeft = false;
         this.moveRight = false;
         this.canJump = false;
+        this.camera = camera;
+        this.raycaster = raycaster;
+        this.proprietes = proprietes
 
-        this.playerMove = new PlayerMove();
+        if (modeJeu == "fps") {
+            this.playerMove = new PlayerFPS(camera,raycaster,this.proprietes);
+        }
 
         // Si l'utilisateur touche l'écran, active le tactile
         window.addEventListener('touchstart', () => {
@@ -29,8 +33,6 @@ export default class PlayerControls {
         this.clavier();
         // Contrôles à la manette
         this.manette();
-        // Met à jour les contrôles
-        this.update();
     }
 
     /**
@@ -48,22 +50,23 @@ export default class PlayerControls {
             switch (event.code) {
                 case 'ArrowUp':
                 case 'KeyW':
-                    this.moveUp = true;
+                    this.playerMove.up = true;
                     break;
                 case 'ArrowDown':
                 case 'KeyS':
-                    this.moveDown = true;
+                    this.playerMove.down = true;
                     break;
                 case 'ArrowLeft':
                 case 'KeyA':
-                    this.moveLeft = true;
+                    this.playerMove.left = true;
                     break;
                 case 'ArrowRight':
                 case 'KeyD':
-                    this.moveRight = true;
+                    this.playerMove.right = true;
                     break;
                 case 'Space':
-                    this.canJump = true;
+                    if (this.playerMove.jump) this.playerMove.velocity.y += this.proprietes.jumpHeight;
+                    this.playerMove.jump = false;
                     break;
             }
         });
@@ -71,22 +74,19 @@ export default class PlayerControls {
             switch (event.code) {
                 case 'ArrowUp':
                 case 'KeyW':
-                    this.moveUp = false;
+                    this.playerMove.up = false;
                     break;
                 case 'ArrowDown':
                 case 'KeyS':
-                    this.moveDown = false;
+                    this.playerMove.down = false;
                     break;
                 case 'ArrowLeft':
                 case 'KeyA':
-                    this.moveLeft = false;
+                    this.playerMove.left = false;
                     break;
                 case 'ArrowRight':
                 case 'KeyD':
-                    this.moveRight = false;
-                    break;
-                case 'Space':
-                    this.canJump = false;
+                    this.playerMove.right = false;
                     break;
             }
         });
@@ -97,27 +97,5 @@ export default class PlayerControls {
      */
     manette() {
         // Vérifie si une manette est connectée
-    }
-
-    /**
-     * Mets à jour les contrôles
-     */
-    update() {
-        if (this.moveUp) {
-            console.log('up')
-        }
-        if (this.moveDown) {
-            console.log('down')
-        }
-        if (this.moveLeft) {
-            console.log('left')
-        }
-        if (this.moveRight) {
-            console.log('right')
-        }
-        if (this.canJump) {
-            console.log('jump')
-        }
-        requestAnimationFrame(() => this.update());
     }
 }
