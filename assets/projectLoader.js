@@ -1,23 +1,6 @@
 
 const projet = document.querySelector('#projet');
 
-document.querySelectorAll('.projet').forEach(function (projet) {
-    projet.addEventListener('click', function () {
-        document.querySelector('#projet').style.display = 'flex';
-        const id = projet.dataset.id;
-        const type = projet.dataset.type;
-        showProject(id, type);
-    });
-});
-
-document.querySelector('#projet').addEventListener('click', function (e) {
-    if (e.target === document.querySelector('#projet')) {
-        document.querySelector('#projet').style.display = 'none';
-        document.querySelector('#projetInfos').innerHTML = '<div class="spinner-border" role="status"></div>';
-    }
-});
-
-
 async function showProject(id, type) {
     const response = await fetch(`/api/projects/${id}`);
     const project = await response.json();
@@ -103,3 +86,5 @@ async function showProject(id, type) {
         div.appendChild(a);
     }
 }
+
+export { showProject };
