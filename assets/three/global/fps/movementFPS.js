@@ -44,9 +44,9 @@ export default class PlayerFPS extends PlayerMove {
             this.raycaster.ray.origin.copy(this.controls.getObject().position);
             this.raycaster.ray.origin.y -= 10;
 
-            //const intersections = this.raycaster.intersectObjects(objects, false);
+            // const intersections = this.raycaster.intersectObjects(collisionsObjects, false);
 
-            //const onObject = intersections.length > 0;
+            // const onObject = intersections.length > 0;
 
             const delta = (time - this.prevTime) / 1000;
 
@@ -66,7 +66,7 @@ export default class PlayerFPS extends PlayerMove {
             /*if (onObject === true) {
 
                 this.velocity.y = Math.max(0, this.velocity.y);
-                this. = true;
+                this.jump = true;
 
             }*/
 
@@ -75,10 +75,10 @@ export default class PlayerFPS extends PlayerMove {
 
             this.controls.getObject().position.y += (this.velocity.y * delta); // new behavior
 
-            if (this.controls.getObject().position.y < 20) {
+            if (this.controls.getObject().position.y < 60) {
 
                 this.velocity.y = 0;
-                this.controls.getObject().position.y = 20;
+                this.controls.getObject().position.y = 60;
 
                 this.jump = true;
             }

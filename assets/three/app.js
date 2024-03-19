@@ -53,13 +53,15 @@ let raycaster;
 
 let intersectedObject = null;
 
+const collisionsObjects = [];
+
 init();
 animate();
 
 function init() {
 
-	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
-	camera.position.y = 20;
+	camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
+	camera.position.y = 40;
 
 	scene = new THREE.Scene();
 	scene.background = new THREE.Color(0xffffff);
@@ -73,34 +75,119 @@ function init() {
 	const playerControls = new PlayerControls(proprietes.modeJeu, camera, raycaster, proprietes, scene);
 	scene.add(playerControls.playerMove.controls.getObject())
 
+	// Skybox
+	const loader = new THREE.TextureLoader();
+	const texture = loader.load(
+		'textures/sky.jpg',
+		() => {
+			texture.mapping = THREE.EquirectangularReflectionMapping;
+			texture.colorSpace = THREE.SRGBColorSpace;
+			scene.background = texture;
+		});
+
+
 	// floor
 
-	let floorGeometry = new THREE.PlaneGeometry(10000, 600);
-	floorGeometry.rotateX(- Math.PI / 2);
+	const floorX = 10000;
+	const floorY = 100;
+	const floorZ = 600;
 
+	let floorGeometry = new THREE.BoxGeometry(floorX, floorY, floorZ);
 
-	const floorMaterial = new THREE.MeshBasicMaterial({ color: 0xffafcc });
-
+	const floorTexture = new THREE.TextureLoader().load('textures/sol/StoneBricksSplitface001_COL_1K.jpg');
+	const floorNomalTexture = new THREE.TextureLoader().load('textures/sol/StoneBricksSplitface001_NRM_1K.jpg');
+	const floorDisplacementTexture = new THREE.TextureLoader().load('textures/sol/StoneBricksSplitface001_DISP_1K.jpg');
+	const floorAoTexture = new THREE.TextureLoader().load('textures/sol/StoneBricksSplitface001_AO_1K.jpg');
+	const floorBumpTexture = new THREE.TextureLoader().load('textures/sol/StoneBricksSplitface001_BUMP_1K.jpg');
+	const floorMaterial = new THREE.MeshPhongMaterial({ map: floorTexture, normalMap: floorNomalTexture, displacementMap: floorDisplacementTexture, aoMap: floorAoTexture, bumpMap: floorBumpTexture});
 	const floor = new THREE.Mesh(floorGeometry, floorMaterial);
 	floor.position.z = -200;
+	floor.position.y = -30;
 	scene.add(floor);
+
+
+	// Repeat texture
+	floorTexture.wrapS = THREE.RepeatWrapping;
+	floorTexture.wrapT = THREE.RepeatWrapping;
+	floorNomalTexture.wrapS = THREE.RepeatWrapping;
+	floorNomalTexture.wrapT = THREE.RepeatWrapping;
+	floorDisplacementTexture.wrapS = THREE.RepeatWrapping;
+	floorDisplacementTexture.wrapT = THREE.RepeatWrapping;
+	floorAoTexture.wrapS = THREE.RepeatWrapping;
+	floorAoTexture.wrapT = THREE.RepeatWrapping;
+
+	// Set the repeat property of the texture
+
+	floorTexture.repeat.set(100, 2);
+	floorNomalTexture.repeat.set(100, 2);
+	floorDisplacementTexture.repeat.set(100, 2);
+	floorAoTexture.repeat.set(100, 2);
+
+	// Ajouer floor à la liste des objets de collision
+	collisionsObjects.push(floor);
+
+
+	// Water
+	const waterGeometry = new THREE.PlaneGeometry(10000, 10000);
+	const waterTexture = new THREE.TextureLoader().load('textures/water/Water_001_COLOR.jpg');
+	const waterNormalTexture = new THREE.TextureLoader().load('textures/water/Water_001_NORM.jpg');
+	const waterDisplacementTexture = new THREE.TextureLoader().load('textures/water/Water_001_DISP.jpg');
+	const waterSpecularTexture = new THREE.TextureLoader().load('textures/water/Water_001_SPEC.jpg');
+
+	const waterMaterial = new THREE.MeshPhongMaterial({ map: waterTexture, normalMap: waterNormalTexture, displacementMap: waterDisplacementTexture, specularMap: waterSpecularTexture});
+
+	const water = new THREE.Mesh(waterGeometry, waterMaterial);
+
+
+	water.rotation.x = - Math.PI / 2;
+	scene.add(water);
+
+
+	// Repeat texture
+	waterTexture.wrapS = THREE.RepeatWrapping;
+	waterTexture.wrapT = THREE.RepeatWrapping;
+	waterNormalTexture.wrapS = THREE.RepeatWrapping;
+	waterNormalTexture.wrapT = THREE.RepeatWrapping;
+	waterDisplacementTexture.wrapS = THREE.RepeatWrapping;
+	waterDisplacementTexture.wrapT = THREE.RepeatWrapping;
+	waterSpecularTexture.wrapS = THREE.RepeatWrapping;
+	waterSpecularTexture.wrapT = THREE.RepeatWrapping;
+
+	// Set the repeat property of the texture
+
+	waterTexture.repeat.set(10, 10);
+	waterNormalTexture.repeat.set(10, 10);
+	waterDisplacementTexture.repeat.set(10, 10);
+	waterSpecularTexture.repeat.set(10, 10);								
+
+
+	// Ajoute une lumière ambiante
+	const light = new THREE.AmbientLight(0xffffff, 2);
+	scene.add(light);
+
+	// Ajoute une lumière directionnelle de couleur rose du dessus
+	const directionalLight = new THREE.DirectionalLight(0xff00ff, 1);
+	directionalLight.position.set(0, 100, 0);
+	scene.add(directionalLight);
+
+
 
 	// Textes
 
 	const gameText = new Text3D('Jeux');
-	gameText.position.set(-100, 20, -200);
+	gameText.position.set(-100, 40, -200);
 	scene.add(gameText);
 
 	const musicText = new Text3D('Musique');
-	musicText.position.set(100, 20, -200);
+	musicText.position.set(100, 40, -200);
 	scene.add(musicText);
 
 	const siteText = new Text3D('Site web');
-	siteText.position.set(-100, 20, -400);
+	siteText.position.set(-100, 40, -400);
 	scene.add(siteText);
 
 	const videoText = new Text3D('Vidéos');
-	videoText.position.set(100, 20, -400);
+	videoText.position.set(100, 40, -400);
 	scene.add(videoText);
 
 	// Afficher les jaquettes
@@ -143,7 +230,7 @@ function init() {
 
 				// Ajoute le titre du projet
 				const titre = new Text3D(element.title, 12);
-				titre.position.set(positionX, 110, positionZ + 10);
+				titre.position.set(positionX, 130, positionZ + 10);
 				scene.add(titre);
 
 				const img = new Image();
@@ -157,7 +244,7 @@ function init() {
 					const jaquetteMaterial = new THREE.SpriteMaterial({ map: jaquette });
 					const jaquetteMesh = new THREE.Sprite(jaquetteMaterial);
 					jaquetteMesh.scale.set(100 * ratio, 100, 1);
-					jaquetteMesh.position.set(positionX, 50, positionZ);
+					jaquetteMesh.position.set(positionX, 70, positionZ);
 					jaquetteMesh.name = element.id;
 					jaquetteMesh.type = element.type;
 					scene.add(jaquetteMesh);
