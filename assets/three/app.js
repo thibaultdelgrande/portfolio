@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import PlayerControls from './global/controles';
 import Text3D from './global/text';
 import GUI from 'lil-gui';
+import { showProject } from '../projectLoader.js';
 
 
 const proprietes = {
@@ -16,18 +17,21 @@ const proprietes = {
  */
 let guiVisible
 
-if (import.meta.env.DEV) {
-	guiVisible = true;
-}
-else {
-	guiVisible = false;
-}
 
 
 const gui = new GUI();
 gui.add(proprietes, 'modeJeu', ['fps']).onChange((value) => {
 	proprietes.modeJeu = value;
 });
+
+if (import.meta.env.DEV) {
+	guiVisible = true;
+}
+else {
+	guiVisible = false;
+	gui.domElement.style.display = 'none';
+}
+
 
 
 document.addEventListener('keydown', (event) => {
@@ -47,6 +51,8 @@ const objects = [];
 
 let raycaster;
 
+let intersectedObject = null;
+
 init();
 animate();
 
@@ -64,7 +70,7 @@ function init() {
 
 	// PlayerControls
 
-	const playerControls = new PlayerControls(proprietes.modeJeu, camera, raycaster, proprietes);
+	const playerControls = new PlayerControls(proprietes.modeJeu, camera, raycaster, proprietes, scene);
 	scene.add(playerControls.playerMove.controls.getObject())
 
 	// floor
@@ -152,15 +158,16 @@ function init() {
 					const jaquetteMesh = new THREE.Sprite(jaquetteMaterial);
 					jaquetteMesh.scale.set(100 * ratio, 100, 1);
 					jaquetteMesh.position.set(positionX, 50, positionZ);
+					jaquetteMesh.name = element.id;
+					jaquetteMesh.type = element.type;
 					scene.add(jaquetteMesh);
+					objects.push(jaquetteMesh);
 				};
 
 				img.src = `/images/projects/logos/${element.imageName}`;
 
 			});
 		});
-
-
 
 
 	//
@@ -170,10 +177,75 @@ function init() {
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	document.body.appendChild(renderer.domElement);
 
+	// Dans la fonction où vous effectuez le rendu de la scène
+	function onDocumentMouseMove(event) {
+		// Calculer la position du point de vue du joueur
+		const vector = new THREE.Vector3();
+		vector.set(
+			// La position du point de vue du joueur sur l'axe x
+			0,
+			// La position du point de vue du joueur sur l'axe y
+			0,
+			0
+		);
+		vector.unproject(camera);
+
+		// Créer un rayon à partir de la caméra dans la direction du point de vue du joueur
+		const raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+
+		raycaster.camera = camera;
+
+		// Vérifier les intersections avec les objets de la scène
+		const intersects = raycaster.intersectObjects(objects);
+
+		// Si des intersections sont trouvées
+		if (intersects.length > 0) {
+			// Récupérer l'objet le plus proche
+			intersectedObject = intersects[0].object;
+		}
+		else {
+			intersectedObject = null;
+		}
+	}
+
+
+	// Ajouter un écouteur d'événements pour détecter les mouvements de la souris
+
+	document.addEventListener('mousemove', onDocumentMouseMove, false);
+
+	document.addEventListener('click', () => {
+		if (intersectedObject !== null && playerControls.playerMove.controls.isLocked) {
+
+			// Afficher #projet
+			document.getElementById('projet').style.display = 'flex';
+
+			// Bloquer les mouvements du joueur
+			playerControls.playerMove.unlock();
+
+			showProject(intersectedObject.name, intersectedObject.type);
+		}
+	});
 	//
 
-	window.addEventListener('resize', onWindowResize);
+	document.getElementById('projet').addEventListener('click', function (e) {
+		if (e.target === document.getElementById('projet')) {
+			document.getElementById('projet').style.display = 'none';
+			document.getElementById('projetInfos').innerHTML = '<div class="spinner-border" role="status"></div>';
+			playerControls.playerMove.lock();
+		}
+	}
+	);
 
+	document.addEventListener('keydown', (event) => {
+		if (event.key === 'Escape') {
+			document.getElementById('projet').style.display = 'none';
+			document.getElementById('projetInfos').innerHTML = '<div class="spinner-border" role="status"></div>';
+			playerControls.playerMove.lock();
+		}
+	});
+
+
+	window.addEventListener('resize', onWindowResize);
 }
 
 function onWindowResize() {
@@ -186,7 +258,6 @@ function onWindowResize() {
 }
 
 function animate() {
-	
 	requestAnimationFrame(animate);
 	renderer.render(scene, camera);
 }

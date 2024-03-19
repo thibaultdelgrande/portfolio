@@ -4,6 +4,9 @@ import { PointerLockControls } from 'three/addons/controls/PointerLockControls.j
 export default class PlayerFPS extends PlayerMove {
     constructor(camera, raycaster, proprietes) {
         super(camera, raycaster, proprietes);
+
+        const projet = document.getElementById('projet');
+
         this.controls = new PointerLockControls(this.camera, document.body);
 
         this.blocker = document.getElementById('blocker');
@@ -16,17 +19,17 @@ export default class PlayerFPS extends PlayerMove {
         });
 
         this.controls.addEventListener('lock', () => {
-
             this.instructions.style.display = 'none';
             this.blocker.style.display = 'none';
-
         });
 
         this.controls.addEventListener('unlock', () => {
-            this.blocker.style.display = 'block';
-            this.instructions.style.display = '';
-
-        });
+            if (projet.style.display === 'none') {
+                this.blocker.style.display = 'block';
+                this.instructions.style.display = '';
+            }
+        }
+        );
 
         this.prevTime = performance.now();
 
@@ -84,5 +87,13 @@ export default class PlayerFPS extends PlayerMove {
         this.prevTime = time;
 
         requestAnimationFrame(() => this.update());
+    }
+
+    unlock() {
+        this.controls.unlock();
+    }
+
+    lock() {
+        this.controls.lock();
     }
 }
